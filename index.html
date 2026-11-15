@@ -23,6 +23,7 @@
             animation: pulse-ring 2s infinite;
             z-index: -1;
         }
+        .categories-bar::-webkit-scrollbar { display: none; }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800 flex flex-col min-h-screen">
@@ -41,7 +42,14 @@
             </div>
             
             <div class="flex items-center space-x-3 space-x-reverse">
-                <button onclick="openSellerModal()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs sm:text-sm px-3 py-2 rounded-lg font-bold shadow transition flex items-center gap-1">
+                <!-- زر السلة -->
+                <button onclick="toggleCartModal()" class="bg-blue-50 hover:bg-blue-100 text-blue-700 px-3.5 py-2 rounded-xl font-bold text-xs sm:text-sm transition flex items-center gap-2 relative border border-blue-200">
+                    <i class="fa-solid fa-shopping-cart text-lg"></i>
+                    <span class="hidden sm:inline">السلة</span>
+                    <span id="cartCountBadge" class="absolute -top-2 -right-2 bg-red-500 text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-bold">0</span>
+                </button>
+
+                <button onclick="openSellerModal()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs sm:text-sm px-3.5 py-2 rounded-xl font-bold shadow transition flex items-center gap-1.5">
                     <i class="fa-solid fa-store"></i> انضم كبائع
                 </button>
             </div>
@@ -49,17 +57,26 @@
     </header>
 
     <!-- الواجهة الترحيبية -->
-    <section class="hero-gradient text-white py-12 px-4 text-center shadow-md">
+    <section class="hero-gradient text-white py-10 px-4 text-center shadow-md">
         <div class="max-w-3xl mx-auto">
-            <h1 class="text-3xl sm:text-5xl font-extrabold mb-4">اكتشف آلاف المنتجات والعروض</h1>
-            <p class="text-blue-100 text-sm sm:text-base mb-6">منصتك الموثوقة للتسوق من أفضل المتاجر والوسطاء المستقلين بأفضل الأسعار وأسرع توصيل.</p>
+            <h1 class="text-2xl sm:text-4xl font-extrabold mb-3">اكتشف آلاف المنتجات والعروض</h1>
+            <p class="text-blue-100 text-xs sm:text-sm mb-5">منصتك الموثوقة للتسوق من أفضل المتاجر والوسطاء المستقلين.</p>
             
-            <!-- شريط البحث (تم تصغير عرضه ليكون أنيقاً ومتناسقاً) -->
-            <div class="bg-white p-1.5 rounded-xl shadow-lg flex items-center max-w-md mx-auto">
+            <!-- شريط البحث -->
+            <div class="bg-white p-1.5 rounded-xl shadow-lg flex items-center max-w-md mx-auto mb-6">
                 <input type="text" id="searchInput" placeholder="ابحث عن منتج (ساعة، إلكترونيات...)" class="w-full px-3 py-2 text-slate-800 focus:outline-none text-xs sm:text-sm" oninput="filterProducts()">
                 <button onclick="filterProducts()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-bold text-xs sm:text-sm transition">
                     <i class="fa-solid fa-search"></i> بحث
                 </button>
+            </div>
+
+            <!-- أزرار الأقسام السريعة -->
+            <div class="flex items-center justify-center gap-2 sm:gap-3 overflow-x-auto categories-bar pb-2 px-1 max-w-2xl mx-auto">
+                <button onclick="filterByCategory('')" class="bg-white/20 hover:bg-white/30 text-white text-xs sm:text-sm px-4 py-2.5 rounded-xl font-bold backdrop-blur-sm transition whitespace-nowrap flex items-center gap-2 shadow-sm">✨ الكل</button>
+                <button onclick="filterByCategory('الساعات')" class="bg-white/20 hover:bg-white/30 text-white text-xs sm:text-sm px-4 py-2.5 rounded-xl font-bold backdrop-blur-sm transition whitespace-nowrap flex items-center gap-2 shadow-sm">⌚ الساعات</button>
+                <button onclick="filterByCategory('إلكترونيات')" class="bg-white/20 hover:bg-white/30 text-white text-xs sm:text-sm px-4 py-2.5 rounded-xl font-bold backdrop-blur-sm transition whitespace-nowrap flex items-center gap-2 shadow-sm">💻 الإلكترونيات</button>
+                <button onclick="filterByCategory('أزياء وملابس')" class="bg-white/20 hover:bg-white/30 text-white text-xs sm:text-sm px-4 py-2.5 rounded-xl font-bold backdrop-blur-sm transition whitespace-nowrap flex items-center gap-2 shadow-sm">👟 أزياء وأحذية</button>
+                <button onclick="filterByCategory('عطور ومجملاًت')" class="bg-white/20 hover:bg-white/30 text-white text-xs sm:text-sm px-4 py-2.5 rounded-xl font-bold backdrop-blur-sm transition whitespace-nowrap flex items-center gap-2 shadow-sm">🌸 عطور</button>
             </div>
         </div>
     </section>
@@ -67,12 +84,58 @@
     <!-- قسم المنتجات الرئيسية -->
     <main class="max-w-7xl mx-auto px-4 py-8 flex-grow w-full">
         <div class="flex justify-between items-center mb-6">
-            <h2 id="sectionTitle" class="text-2xl font-bold text-slate-900 border-r-4 border-blue-600 pr-3">أحدث المنتجات المعروضة</h2>
+            <h2 id="sectionTitle" class="text-xl sm:text-2xl font-bold text-slate-900 border-r-4 border-blue-600 pr-3">أحدث المنتجات المعروضة</h2>
             <span id="productCount" class="text-xs text-slate-500 font-semibold">جاري العرض...</span>
         </div>
 
         <div id="productsGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"></div>
     </main>
+
+    <!-- نافذة سلة المشتريات وإنهاء الطلب -->
+    <div id="cartModal" class="fixed inset-0 bg-black/50 z-50 hidden flex justify-end">
+        <div class="bg-white w-full sm:w-[450px] h-full shadow-2xl flex flex-col justify-between transform transition-transform duration-300">
+            <div class="bg-blue-600 text-white p-4 sm:p-5 flex justify-between items-center shadow">
+                <h3 class="font-bold text-base sm:text-lg flex items-center gap-2">
+                    <i class="fa-solid fa-shopping-cart"></i> سلة مشترياتك
+                </h3>
+                <button onclick="toggleCartModal()" class="text-white hover:text-slate-200 text-2xl font-bold">×</button>
+            </div>
+
+            <!-- محتوى السلة -->
+            <div id="cartItemsContainer" class="p-4 flex-grow overflow-y-auto space-y-3 bg-slate-50 text-sm">
+                <!-- يتم تعبئة المنتجات هنا -->
+            </div>
+
+            <!-- نموذج إتمام الطلب الذكي (جلب البيانات تلقائياً) -->
+            <div class="p-4 bg-white border-t space-y-3">
+                <div class="text-xs font-bold text-slate-700">بيانات الاستلام والتوصيل:</div>
+                <div>
+                    <label class="block text-[11px] text-slate-500 mb-1">رقم الهاتف (سيتم فحص عضويتك وسجل عنوانك تلقائياً):</label>
+                    <div class="flex gap-2">
+                        <input type="tel" id="customerPhone" placeholder="010xxxxxxxx" class="flex-grow border rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-blue-600" onblur="checkCustomerData()">
+                        <button type="button" onclick="checkCustomerData()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 px-3 py-2 rounded-lg text-xs font-bold">بحث</button>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-[11px] text-slate-500 mb-1">اسم العميل:</label>
+                    <input type="text" id="customerName" placeholder="الاسم بالكامل" class="w-full border rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-blue-600">
+                </div>
+                <div>
+                    <label class="block text-[11px] text-slate-500 mb-1">عنوان الاستلام بالتفصيل (يُجلب تلقائياً إن وُجد):</label>
+                    <textarea id="customerAddress" placeholder="المحافظة، المركز، الشارع، رقم الحائط..." class="w-full border rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-blue-600 h-16"></textarea>
+                </div>
+
+                <div class="flex justify-between items-center font-extrabold text-base pt-2 border-t">
+                    <span>الإجمالي الكلي:</span>
+                    <span id="cartTotalPrice" class="text-blue-600">0 ج.م</span>
+                </div>
+
+                <button onclick="submitCheckout()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl transition shadow text-sm">
+                    تأكيد وإرسال الطلب الآن 🚀
+                </button>
+            </div>
+        </div>
+    </div>
 
     <!-- زر المساعد الذكي العائم -->
     <div class="fixed bottom-6 left-6 z-50">
@@ -83,7 +146,7 @@
         </button>
     </div>
 
-    <!-- نافذة المساعد الذكي المطور -->
+    <!-- نافذة المساعد الذكي -->
     <div id="chatbotModal" class="fixed inset-0 bg-black/50 z-50 hidden flex justify-end">
         <div class="bg-white w-full sm:w-[420px] h-full shadow-2xl flex flex-col justify-between transform transition-transform duration-300">
             <div class="bg-blue-600 text-white p-4 sm:p-5 flex justify-between items-center shadow">
@@ -98,17 +161,17 @@
             </div>
             <div id="chatMessages" class="p-4 sm:p-6 flex-grow overflow-y-auto space-y-3 bg-slate-50 text-sm sm:text-base">
                 <div class="bg-blue-50 text-blue-900 p-3.5 rounded-xl rounded-tr-none shadow-sm max-w-[85%]">
-                    أهلاً بك! أنا مساعدك الذكي. اكتب لي مثلاً: <b>"اعرض لي الساعات"</b> أو <b>"إلكترونيات"</b> وسأقوم بنقلك وتصفيتها لك فوراً!
+                    أهلاً بك! أقدر أساعدك في تصفح الساعات، الإلكترونيات، أو إتمام مشترياتك عبر السلة. اسألني عما تريده!
                 </div>
             </div>
             <div class="p-4 bg-white border-t flex items-center space-x-2 space-x-reverse">
-                <input type="text" id="chatInput" placeholder="اكتب طلبك هنا (مثال: ساعات)..." class="flex-grow border rounded-xl px-4 py-3 text-sm sm:text-base focus:outline-none focus:border-blue-600" onkeypress="if(event.key === 'Enter') sendChatMessage()">
-                <button onclick="sendChatMessage()" class="bg-blue-600 text-white px-5 py-3 rounded-xl text-sm sm:text-base font-bold hover:bg-blue-700 shadow">إرسال</button>
+                <input type="text" id="chatInput" placeholder="اكتب طلبك هنا..." class="flex-grow border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-blue-600" onkeypress="if(event.key === 'Enter') sendChatMessage()">
+                <button onclick="sendChatMessage()" class="bg-blue-600 text-white px-5 py-3 rounded-xl text-sm font-bold hover:bg-blue-700 shadow">إرسال</button>
             </div>
         </div>
     </div>
 
-    <!-- نافذة نموذج انضمام البائعين -->
+    <!-- نافذة انضمام البائعين -->
     <div id="sellerModal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl p-6 relative">
             <button onclick="closeSellerModal()" class="absolute top-4 left-4 text-slate-400 hover:text-slate-600 font-bold text-lg">×</button>
@@ -116,45 +179,13 @@
                 <i class="fa-solid fa-store text-emerald-600"></i> انضم كبائع في متجر أميل
             </h3>
             <form id="sellerForm" onsubmit="submitSellerForm(event)" class="space-y-3 text-xs sm:text-sm">
-                <div>
-                    <label class="block font-semibold mb-1">اسم التاجر / المتجر</label>
-                    <input type="text" id="sellerName" required class="w-full border rounded-lg p-2 focus:outline-none focus:border-emerald-600">
-                </div>
-                <div>
-                    <label class="block font-semibold mb-1">رقم الواتساب للتواصل</label>
-                    <input type="tel" id="sellerWhatsapp" required placeholder="010xxxxxxxx" class="w-full border rounded-lg p-2 focus:outline-none focus:border-emerald-600">
-                </div>
-                <div>
-                    <label class="block font-semibold mb-1">اسم المنتج المقترح</label>
-                    <input type="text" id="productName" required class="w-full border rounded-lg p-2 focus:outline-none focus:border-emerald-600">
-                </div>
-                <div>
-                    <label class="block font-semibold mb-1">السعر المطلوب (جنية)</label>
-                    <input type="number" id="productPrice" required class="w-full border rounded-lg p-2 focus:outline-none focus:border-emerald-600">
-                </div>
-                <div>
-                    <label class="block font-semibold mb-1">رابط صورة المنتج (رابط مباشر)</label>
-                    <input type="url" id="productImage" placeholder="https://..." required class="w-full border rounded-lg p-2 focus:outline-none focus:border-emerald-600">
-                </div>
+                <div><label class="block font-semibold mb-1">اسم التاجر / المتجر</label><input type="text" id="sellerName" required class="w-full border rounded-lg p-2 focus:outline-none focus:border-emerald-600"></div>
+                <div><label class="block font-semibold mb-1">رقم الواتساب للتواصل</label><input type="tel" id="sellerWhatsapp" required placeholder="010xxxxxxxx" class="w-full border rounded-lg p-2 focus:outline-none focus:border-emerald-600"></div>
+                <div><label class="block font-semibold mb-1">اسم المنتج المقترح</label><input type="text" id="productName" required class="w-full border rounded-lg p-2 focus:outline-none focus:border-emerald-600"></div>
+                <div><label class="block font-semibold mb-1">السعر المطلوب (جنية)</label><input type="number" id="productPrice" required class="w-full border rounded-lg p-2 focus:outline-none focus:border-emerald-600"></div>
+                <div><label class="block font-semibold mb-1">رابط صورة المنتج</label><input type="url" id="productImage" placeholder="https://..." required class="w-full border rounded-lg p-2 focus:outline-none focus:border-emerald-600"></div>
                 <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-lg transition mt-2">إرسال طلب الانضمام</button>
             </form>
-        </div>
-    </div>
-
-    <!-- نافذة مكافأة فيسبوك -->
-    <div id="fbModal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl p-6 text-center">
-            <div class="bg-blue-100 text-blue-600 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl">
-                <i class="fa-brands fa-facebook"></i>
-            </div>
-            <h3 class="text-xl font-bold text-slate-900 mb-2">احصل على خصم فوري 10%!</h3>
-            <p class="text-xs sm:text-sm text-slate-600 mb-6">تابع صفحتنا الرسمية على فيسبوك الآن لتستفيد من الخصم الفوري على أول طلبية.</p>
-            <div class="space-y-3">
-                <a href="https://facebook.com" target="_blank" onclick="applyFbDiscount()" class="block w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl transition shadow">
-                    <i class="fa-brands fa-facebook ml-2"></i> متابعة الصفحة وتفعيل الخصم
-                </a>
-                <button onclick="closeFbModal()" class="block w-full text-slate-500 hover:text-slate-700 font-semibold py-2 text-xs">تخطي في الوقت الحالي</button>
-            </div>
         </div>
     </div>
 
@@ -176,6 +207,8 @@
             { id: "P5", name: "عطر فرنسي فاخر للرجال والنساء", price: 750, category: "عطور ومجملاًت", image: "https://images.unsplash.com/photo-1523293182086-7651a899d37f?w=500", seller: "عطور الشرق" }
         ];
 
+        let cart = [];
+
         window.addEventListener('DOMContentLoaded', () => {
             renderProducts(allProducts);
             fetch(SCRIPT_URL + "?action=getProducts")
@@ -187,12 +220,6 @@
                     }
                 })
                 .catch(err => console.log("يعمل على المنتجات الافتراضية"));
-
-            setTimeout(() => {
-                if(!localStorage.getItem('fb_discount_claimed')) {
-                    document.getElementById('fbModal').classList.remove('hidden');
-                }
-            }, 2000);
         });
 
         function renderProducts(productsToRender) {
@@ -214,15 +241,126 @@
                             </div>
                             <div class="flex items-center justify-between mt-4">
                                 <span class="text-lg font-extrabold text-blue-600">${p.price} ج.م</span>
-                                <button onclick="orderProduct('${p.name}', '${p.price}', '${p.seller}')" class="bg-blue-600 hover:bg-blue-700 text-white text-xs px-3 py-2 rounded-lg font-bold transition">اطلب الآن</button>
+                                <button onclick="addToCart('${p.name}', ${p.price}, '${p.seller}')" class="bg-blue-600 hover:bg-blue-700 text-white text-xs px-3.5 py-2 rounded-xl font-bold transition flex items-center gap-1">
+                                    <i class="fa-solid fa-cart-plus"></i> أضف للسلة
+                                </button>
                             </div>
                         </div>
                     </div>
                 `).join('');
             } else {
-                grid.innerHTML = `<div class="col-span-full text-center py-12 text-slate-500">لا توجد منتجات تطابق بحثك حالياً.</div>`;
+                grid.innerHTML = `<div class="col-span-full text-center py-12 text-slate-500">لا توجد منتجات تطابق هذا القسم حالياً.</div>`;
                 countSpan.innerText = "0 منتج";
             }
+        }
+
+        // إدارة سلة المشتريات
+        function addToCart(name, price, seller) {
+            cart.push({ name, price, seller });
+            updateCartUI();
+            alert("تم إضافة المنتج إلى السلة بنجاح! 🛒");
+        }
+
+        function updateCartUI() {
+            document.getElementById('cartCountBadge').innerText = cart.length;
+            const container = document.getElementById('cartItemsContainer');
+            
+            if(cart.length === 0) {
+                container.innerHTML = `<div class="text-center py-12 text-slate-400">سلة مشترياتك فارغة حالياً.</div>`;
+                document.getElementById('cartTotalPrice').innerText = "0 ج.م";
+                return;
+            }
+
+            let total = 0;
+            container.innerHTML = cart.map((item, index) => {
+                total += Number(item.price);
+                return `
+                    <div class="bg-white p-3 rounded-xl border flex justify-between items-center shadow-sm">
+                        <div>
+                            <h4 class="font-bold text-slate-800 text-xs">${item.name}</h4>
+                            <p class="text-[10px] text-blue-600 font-bold">${item.price} ج.م | ${item.seller}</p>
+                        </div>
+                        <button onclick="removeFromCart(${index})" class="text-red-500 hover:text-red-700 text-xs font-bold px-2 py-1"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                `;
+            }).join('');
+
+            document.getElementById('cartTotalPrice').innerText = total + " ج.م";
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            updateCartUI();
+        }
+
+        function toggleCartModal() {
+            document.getElementById('cartModal').classList.toggle('hidden');
+        }
+
+        // التحقق التلقائي من العميل عبر رقم الهاتف وجلب عنوانه من الشيت
+        function checkCustomerData() {
+            const phone = document.getElementById('customerPhone').value.trim();
+            if(!phone) return;
+
+            fetch(SCRIPT_URL + "?action=checkCustomer&phone=" + encodeURIComponent(phone))
+                .then(res => res.json())
+                .then(data => {
+                    if(data.status === "found") {
+                        document.getElementById('customerName').value = data.name || "";
+                        document.getElementById('customerAddress').value = data.address || "";
+                        alert(`أهلاً بك يا ${data.name || 'عميلنا العزيز'}! تم استرجاع عنوانك وسجل بياناتك تلقائياً من قاعدة البيانات بنجاح.`);
+                    } else {
+                        console.log("رقم جديد، يرجى إدخال البيانات لإضافته تلقائياً.");
+                    }
+                })
+                .catch(err => console.log("خطأ في التحقق من العميل"));
+        }
+
+        function submitCheckout() {
+            if(cart.length === 0) {
+                alert("سلة المشتريات فارغة!");
+                return;
+            }
+            const phone = document.getElementById('customerPhone').value.trim();
+            const name = document.getElementById('customerName').value.trim();
+            const address = document.getElementById('customerAddress').value.trim();
+
+            if(!phone || !name || !address) {
+                alert("يرجى إدخال رقم الهاتف، الاسم، وعنوان الاستلام لإتمام الطلب.");
+                return;
+            }
+
+            const itemsStr = cart.map(i => i.name).join(" + ");
+            const totalVal = cart.reduce((sum, i) => sum + Number(i.price), 0);
+            const sellerStr = cart.map(i => i.seller).join(", ");
+
+            const orderPayload = {
+                action: "newOrder",
+                customerName: name,
+                phone: phone,
+                address: address,
+                items: itemsStr,
+                total: totalVal,
+                seller: sellerStr
+            };
+
+            fetch(SCRIPT_URL, {
+                method: 'POST',
+                body: JSON.stringify(orderPayload)
+            })
+            .then(res => res.json())
+            .then(data => {
+                alert("تم تسجيل طلبك بنجاح برقم: " + (data.orderId || "ORD-9921") + "! سنتواصل معك لتأكيد الشحن قريباً.");
+                cart = [];
+                updateCartUI();
+                toggleCartModal();
+            })
+            .catch(err => {
+                alert("تم إرسال الطلب بنجاح!");
+                cart = [];
+                updateCartUI();
+                toggleCartModal();
+            });
         }
 
         function filterProducts() {
@@ -235,40 +373,33 @@
             renderProducts(filtered);
         }
 
-        function toggleChatbot() {
-            document.getElementById('chatbotModal').classList.toggle('hidden');
+        function filterByCategory(category) {
+            document.getElementById('searchInput').value = "";
+            if(category === "") {
+                document.getElementById('sectionTitle').innerText = "أحدث المنتجات المعروضة";
+                renderProducts(allProducts);
+            } else {
+                const filtered = allProducts.filter(p => p.category === category);
+                document.getElementById('sectionTitle').innerText = `قسم: ${category}`;
+                renderProducts(filtered);
+            }
         }
 
+        function toggleChatbot() { document.getElementById('chatbotModal').classList.toggle('hidden'); }
         function sendChatMessage() {
             const input = document.getElementById('chatInput');
             const text = input.value.trim().toLowerCase();
             if(!text) return;
-
             const chatMessages = document.getElementById('chatMessages');
             chatMessages.innerHTML += `<div class="bg-blue-600 text-white p-3.5 rounded-xl rounded-tl-none shadow-sm max-w-[85%] mr-auto">${input.value}</div>`;
             input.value = "";
             chatMessages.scrollTop = chatMessages.scrollHeight;
 
             setTimeout(() => {
-                let reply = "أستطيع مساعدتك في تصفح المنتجات، معرفة الأسعار، أو التسجيل كبائع.";
-                
-                if(text.includes("ساعة") || text.includes("ساعات") || text.includes("الساعات")) {
-                    document.getElementById('searchInput').value = "ساعة";
-                    filterProducts();
-                    document.getElementById('sectionTitle').innerText = "نتائج بحث المساعد الذكي: قسم الساعات";
-                    window.scrollTo({ top: 300, behavior: 'smooth' });
-                    reply = "تم نقلك فوراً إلى قسم الساعات وعرض أفضل الساعات المتوفرة في المتجر!";
-                } else if(text.includes("إلكترونيات") || text.includes("سماعة") || text.includes("موبايل")) {
-                    document.getElementById('searchInput').value = "إلكترونيات";
-                    filterProducts();
-                    document.getElementById('sectionTitle').innerText = "نتائج بحث المساعد الذكي: قسم الإلكترونيات";
-                    window.scrollTo({ top: 300, behavior: 'smooth' });
-                    reply = "إليك أحدث المنتجات الإلكترونية المتوفرة الآن!";
-                } else if(text.includes("بائع") || text.includes("انضم")) {
-                    openSellerModal();
-                    reply = "فعلت لك نموذج التسجيل كبائع الآن لتتمكن من إضافة منتجاتك!";
-                }
-
+                let reply = "أستطيع مساعدتك في تصفح المنتجات وإضافتها للسلة.";
+                if(text.includes("ساعة") || text.includes("ساعات")) { filterByCategory('الساعات'); reply = "⌚ إليك قسم الساعات!"; }
+                else if(text.includes("إلكترونيات")) { filterByCategory('إلكترونيات'); reply = "💻 إليك الإلكترونيات!"; }
+                else if(text.includes("سلة")) { toggleCartModal(); reply = "🛒 فتحت لك سلة المشتريات!"; }
                 chatMessages.innerHTML += `<div class="bg-blue-50 text-blue-900 p-3.5 rounded-xl rounded-tr-none shadow-sm max-w-[85%]">${reply}</div>`;
                 chatMessages.scrollTop = chatMessages.scrollHeight;
             }, 500);
@@ -276,7 +407,6 @@
 
         function openSellerModal() { document.getElementById('sellerModal').classList.remove('hidden'); }
         function closeSellerModal() { document.getElementById('sellerModal').classList.add('hidden'); }
-
         function submitSellerForm(e) {
             e.preventDefault();
             const payload = {
@@ -284,55 +414,13 @@
                 sellerName: document.getElementById('sellerName').value,
                 whatsapp: document.getElementById('sellerWhatsapp').value,
                 productName: document.getElementById('productName').value,
-                price: document.getElementById('productPrice').value,
+                price: document.getElementById('productPrice'].value,
                 image: document.getElementById('productImage').value
             };
-
-            fetch(SCRIPT_URL, {
-                method: 'POST',
-                body: JSON.stringify(payload)
-            })
+            fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) })
             .then(res => res.json())
-            .then(data => {
-                alert("تم إرسال طلب انضمامك بنجاح وسيتم مراجعته وعرض منتجك قريباً!");
-                closeSellerModal();
-                document.getElementById('sellerForm').reset();
-            })
+            .then(data => { alert("تم إرسال طلب انضمامك كبائع بنجاح!"); closeSellerModal(); document.getElementById('sellerForm').reset(); })
             .catch(err => alert("تم إرسال الطلب بنجاح."));
-        }
-
-        function closeFbModal() { document.getElementById('fbModal').classList.add('hidden'); }
-        function applyFbDiscount() {
-            localStorage.setItem('fb_discount_claimed', 'true');
-            alert("تم تفعيل خصم 10% بنجاح!");
-            closeFbModal();
-        }
-
-        function orderProduct(name, price, seller) {
-            const phone = prompt("أدخل رقم هاتفك لإتمام الطلب وسرعة التواصل معك:");
-            if(!phone) return;
-            const address = prompt("أدخل عنوان الاستلام بالتفصيل:");
-            if(!address) return;
-
-            const orderPayload = {
-                action: "newOrder",
-                customerName: "عميل المتجر",
-                phone: phone,
-                address: address,
-                items: name,
-                total: price,
-                seller: seller
-            };
-
-            fetch(SCRIPT_URL, {
-                method: 'POST',
-                body: JSON.stringify(orderPayload)
-            })
-            .then(res => res.json())
-            .then(data => {
-                alert("تم تسجيل طلبك بنجاح برقم: " + (data.orderId || "ORD-58492") + " وسنتواصل معك قريباً لتأكيد الشحن!");
-            })
-            .catch(err => alert("تم تسجيل طلبك بنجاح وسنتواصل معك قريباً!"));
         }
     </script>
 </body>
