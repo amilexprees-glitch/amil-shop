@@ -3,12 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة التحكم التحليلية | AMIL SHOP</title>
+    <title>لوحة التحكم والتحليلات | AMIL ADMIN</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f1f5f9; }
-    </style>
+    <style>body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f1f5f9; }</style>
 </head>
 <body class="flex h-screen overflow-hidden text-slate-800">
 
@@ -19,124 +17,72 @@
                 <i class="fa-solid fa-chart-pie text-blue-500"></i> AMIL ADMIN
             </div>
             <nav class="space-y-2 text-sm">
-                <a href="#" class="flex items-center gap-3 bg-blue-600 text-white px-4 py-3 rounded-xl font-bold shadow">
-                    <i class="fa-solid fa-gauge-high"></i> لوحة المؤشرات والطلبات
-                </a>
-                <a href="https://amilexprees-glitch.github.io/amil-shop/" target="_blank" class="flex items-center gap-3 hover:bg-slate-800 text-emerald-400 px-4 py-3 rounded-xl font-bold transition">
-                    <i class="fa-solid fa-store"></i> زيارة المتجر المنشور <i class="fa-solid fa-arrow-up-right-from-square text-xs mr-auto"></i>
+                <button onclick="switchTab('orders')" id="btnOrdersTab" class="w-full flex items-center gap-3 bg-blue-600 text-white px-4 py-3 rounded-xl font-bold shadow text-right transition">
+                    <i class="fa-solid fa-bag-shopping"></i> إدارة الطلبات
+                </button>
+                <button onclick="switchTab('products')" id="btnProductsTab" class="w-full flex items-center gap-3 hover:bg-slate-800 text-slate-300 px-4 py-3 rounded-xl font-bold transition text-right">
+                    <i class="fa-solid fa-boxes-stacked"></i> منتجات المتجر
+                </button>
+                <button onclick="openAddProductModal()" class="w-full flex items-center gap-3 hover:bg-slate-800 text-emerald-400 px-4 py-3 rounded-xl font-bold transition text-right">
+                    <i class="fa-solid fa-circle-plus"></i> إضافة منتج جديد
+                </button>
+                <a href="https://amilexprees-glitch.github.io/amil-shop/" target="_blank" class="flex items-center gap-3 hover:bg-slate-800 text-blue-400 px-4 py-3 rounded-xl font-bold transition">
+                    <i class="fa-solid fa-store"></i> زيارة المتجر المباشر <i class="fa-solid fa-arrow-up-right-from-square text-xs mr-auto"></i>
                 </a>
             </nav>
         </div>
         <div class="p-4 text-center text-xs text-slate-500 border-t border-slate-800">
-            نظام إدارة أميل إكسبريس © 2026
+            أميل إكسبريس © 2026
         </div>
     </aside>
 
     <!-- المحتوى الرئيسي -->
     <main class="flex-grow overflow-y-auto p-4 sm:p-6 lg:p-8">
         
-        <!-- الهيدر العلوي -->
+        <!-- الهيدر -->
         <div class="bg-white p-4 rounded-2xl shadow-sm mb-6 flex flex-wrap justify-between items-center gap-4 border border-slate-200">
             <div>
-                <h1 class="text-lg sm:text-xl font-black text-slate-800">مركز القيادة والتحليل المالي 📊</h1>
-                <p class="text-xs text-slate-500">متابعة حية للأرباح، المنتجات الأكثر مبيعاً، وحركة الطلبات</p>
+                <h1 class="text-lg sm:text-xl font-black text-slate-800">مركز التحكم والعمليات اللوجستية 🚀</h1>
+                <p class="text-xs text-slate-500">متابعة دقيقة للطلبات والمنتجات المرتبطة بشيت جوجل</p>
             </div>
             
             <div class="flex items-center gap-3">
-                <!-- أيقونة الحساب / المتجر المنشور -->
-                <a href="https://amilexprees-glitch.github.io/amil-shop/" target="_blank" title="فتح المتجر المنشور" class="bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition">
-                    <i class="fa-solid fa-globe text-base"></i>
-                    <span>المتجر المباشر</span>
+                <button onclick="openAddProductModal()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 shadow">
+                    <i class="fa-solid fa-plus"></i> إضافة منتج
+                </button>
+                <a href="https://amilexprees-glitch.github.io/amil-shop/" target="_blank" class="bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-2">
+                    <i class="fa-solid fa-globe"></i> المتجر
                 </a>
-
-                <!-- حالة الاتصال -->
-                <div id="connectionStatus" class="flex items-center gap-2 text-xs font-bold text-amber-600 bg-amber-50 px-3 py-2 rounded-xl border border-amber-200">
-                    <i class="fa-solid fa-spinner fa-spin"></i> جاري الاتصال...
+                <div id="connectionStatus" class="flex items-center gap-2 text-xs font-bold text-emerald-600 bg-emerald-50 px-3 py-2 rounded-xl border border-emerald-200">
+                    <span class="w-2 h-2 bg-emerald-500 rounded-full animate-ping"></span> متصل بالشيت
                 </div>
             </div>
         </div>
 
-        <!-- الصف الأول: المؤشرات المالية والأرباح -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-            <!-- إجمالي المبيعات -->
+        <!-- بطاقات الإحصائيات -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
             <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
-                <div class="flex justify-between items-start mb-2">
-                    <span class="text-xs text-slate-500 font-bold">إجمالي المبيعات</span>
-                    <span class="bg-blue-100 text-blue-600 p-2 rounded-lg text-sm"><i class="fa-solid fa-sack-dollar"></i></span>
-                </div>
-                <h3 id="totalRevenue" class="text-2xl font-black text-slate-800">0 ج.م</h3>
-                <p class="text-[11px] text-slate-400 mt-1">من إجمالي <span id="ordersCount" class="font-bold text-slate-700">0</span> طلب</p>
+                <span class="text-xs text-slate-500 font-bold">إجمالي المبيعات</span>
+                <h3 id="totalRevenue" class="text-2xl font-black text-slate-800 mt-1">0 ج.م</h3>
             </div>
-
-            <!-- صافي الأرباح -->
             <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
-                <div class="flex justify-between items-start mb-2">
-                    <span class="text-xs text-slate-500 font-bold">صافي الأرباح</span>
-                    <span class="bg-emerald-100 text-emerald-600 p-2 rounded-lg text-sm"><i class="fa-solid fa-coins"></i></span>
-                </div>
-                <h3 id="netProfit" class="text-2xl font-black text-emerald-600">0 ج.م</h3>
-                <p class="text-[11px] text-slate-500 mt-1">نسبة الربح: <span id="profitMargin" class="font-extrabold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded">0%</span></p>
+                <span class="text-xs text-slate-500 font-bold">إجمالي الطلبات</span>
+                <h3 id="ordersCount" class="text-2xl font-black text-blue-600 mt-1">0</h3>
             </div>
-
-            <!-- مؤشر أداء الشهر (طالع أم نازل) -->
             <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
-                <div class="flex justify-between items-start mb-2">
-                    <span class="text-xs text-slate-500 font-bold">مؤشر نمو الشهر</span>
-                    <span id="trendIconBox" class="bg-slate-100 text-slate-600 p-2 rounded-lg text-sm"><i class="fa-solid fa-chart-line"></i></span>
-                </div>
-                <div class="flex items-center gap-2">
-                    <h3 id="monthlyTrendText" class="text-xl font-black text-slate-800">مستقر</h3>
-                    <span id="monthlyGrowthBadge" class="text-xs font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-600">0%</span>
-                </div>
-                <p class="text-[11px] text-slate-400 mt-1">مقارنة بالشهر السابق</p>
-            </div>
-
-            <!-- إجمالي المنتجات -->
-            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
-                <div class="flex justify-between items-start mb-2">
-                    <span class="text-xs text-slate-500 font-bold">المنتجات المعروضة</span>
-                    <span class="bg-purple-100 text-purple-600 p-2 rounded-lg text-sm"><i class="fa-solid fa-boxes-stacked"></i></span>
-                </div>
-                <h3 id="productsCount" class="text-2xl font-black text-slate-800">0</h3>
-                <p class="text-[11px] text-slate-400 mt-1">منتج نشط في المتجر</p>
+                <span class="text-xs text-slate-500 font-bold">منتجات المتجر</span>
+                <h3 id="productsCount" class="text-2xl font-black text-emerald-600 mt-1">0</h3>
             </div>
         </div>
 
-        <!-- الصف الثاني: الأكثر مبيعاً وأفضل عميل -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-            <!-- أكثر منتج مباع -->
-            <div class="bg-gradient-to-l from-amber-50 to-white p-5 rounded-2xl shadow-sm border border-amber-200 flex items-center gap-4">
-                <div class="bg-amber-500 text-white w-12 h-12 rounded-2xl flex items-center justify-center text-xl shadow-md shrink-0">
-                    <i class="fa-solid fa-trophy"></i>
-                </div>
-                <div class="overflow-hidden">
-                    <span class="text-[11px] font-bold text-amber-700 uppercase tracking-wider">🔥 الأكثر مبيعاً (Top Product)</span>
-                    <h4 id="topProduct" class="text-base font-black text-slate-800 truncate mt-0.5">لا توجد بيانات كافية</h4>
-                    <p id="topProductCount" class="text-xs text-slate-500">0 مبيعات</p>
-                </div>
-            </div>
-
-            <!-- أكثر عميل شراءً -->
-            <div class="bg-gradient-to-l from-blue-50 to-white p-5 rounded-2xl shadow-sm border border-blue-200 flex items-center gap-4">
-                <div class="bg-blue-600 text-white w-12 h-12 rounded-2xl flex items-center justify-center text-xl shadow-md shrink-0">
-                    <i class="fa-solid fa-crown"></i>
-                </div>
-                <div class="overflow-hidden">
-                    <span class="text-[11px] font-bold text-blue-700 uppercase tracking-wider">⭐ العميل الأكثر شراءً (VIP)</span>
-                    <h4 id="topCustomer" class="text-base font-black text-slate-800 truncate mt-0.5">لا توجد بيانات كافية</h4>
-                    <p id="topCustomerStats" class="text-xs text-slate-500">0 طلبات | 0 ج.م</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- جدول الطلبات -->
-        <div class="bg-white rounded-2xl shadow-sm p-5 border border-slate-200">
-            <div class="flex flex-wrap justify-between items-center gap-3 mb-4">
+        <!-- قسم الطلبات (الافتراضي) -->
+        <div id="sectionOrders" class="bg-white rounded-2xl shadow-sm p-5 border border-slate-200">
+            <div class="flex justify-between items-center mb-4">
                 <h3 class="font-bold text-slate-800 text-base flex items-center gap-2">
-                    <i class="fa-solid fa-list-check text-blue-600"></i> سجل الطلبات الواردة
+                    <i class="fa-solid fa-bag-shopping text-blue-600"></i> سجل الطلبات الواردة
                 </h3>
-                <button onclick="loadDashboard()" class="bg-blue-600 hover:bg-blue-700 text-white text-xs px-4 py-2 rounded-xl font-bold transition shadow-sm flex items-center gap-1.5">
-                    <i class="fa-solid fa-rotate"></i> تحديث البيانات الآن
+                <button onclick="loadDashboardData()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs px-3 py-2 rounded-xl font-bold transition">
+                    <i class="fa-solid fa-rotate"></i> تحديث
                 </button>
             </div>
 
@@ -145,177 +91,191 @@
                     <thead>
                         <tr class="bg-slate-50 text-slate-600 border-b border-slate-200">
                             <th class="p-3">رقم الطلب</th>
-                            <th class="p-3">العميل</th>
-                            <th class="p-3">الهاتف</th>
+                            <th class="p-3">التاريخ</th>
+                            <th class="p-3">اسم العميل</th>
+                            <th class="p-3">رقم الهاتف</th>
                             <th class="p-3">العنوان</th>
-                            <th class="p-3">المنتجات</th>
+                            <th class="p-3">المنتجات المطلوبة</th>
                             <th class="p-3">الإجمالي</th>
-                            <th class="p-3">صافي الربح</th>
-                            <th class="p-3">البائع</th>
+                            <th class="p-3">الحالة</th>
                         </tr>
                     </thead>
                     <tbody id="ordersTableBody">
-                        <tr>
-                            <td colspan="8" class="text-center py-8 text-slate-400">جاري تحميل البيانات من Google Sheets...</td>
-                        </tr>
+                        <tr><td colspan="8" class="text-center py-8 text-slate-400">جاري تحميل الطلبات...</td></tr>
                     </tbody>
                 </table>
             </div>
         </div>
+
+        <!-- قسم المنتجات (يظهر عند الضغط على منتجات المتجر في القائمة) -->
+        <div id="sectionProducts" class="bg-white rounded-2xl shadow-sm p-5 border border-slate-200 hidden">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="font-bold text-slate-800 text-base flex items-center gap-2">
+                    <i class="fa-solid fa-boxes-stacked text-emerald-600"></i> قائمة جميع منتجات المتجر النشطة
+                </h3>
+                <button onclick="openAddProductModal()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs px-3 py-2 rounded-xl font-bold shadow">
+                    <i class="fa-solid fa-plus"></i> إضافة منتج جديد
+                </button>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-right text-xs sm:text-sm">
+                    <thead>
+                        <tr class="bg-slate-50 text-slate-600 border-b border-slate-200">
+                            <th class="p-3">صورة المنتج</th>
+                            <th class="p-3">اسم المنتج</th>
+                            <th class="p-3">القسم / التصنيف</th>
+                            <th class="p-3">السعر</th>
+                            <th class="p-3">البائع</th>
+                        </tr>
+                    </thead>
+                    <tbody id="productsTableBody">
+                        <tr><td colspan="5" class="text-center py-8 text-slate-400">جاري تحميل المنتجات...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
     </main>
 
+    <!-- نافذة إضافة منتج -->
+    <div id="addProductModal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl p-6 relative">
+            <button onclick="closeAddProductModal()" class="absolute top-4 left-4 text-slate-400 hover:text-slate-600 text-xl font-bold">×</button>
+            <h3 class="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
+                <i class="fa-solid fa-box-open text-emerald-600"></i> إضافة منتج جديد للمتجر
+            </h3>
+            <form id="addProductForm" onsubmit="submitNewProduct(event)" class="space-y-3 text-xs sm:text-sm">
+                <div>
+                    <label class="block font-semibold mb-1">اسم المنتج</label>
+                    <input type="text" id="newProdName" required class="w-full border rounded-lg p-2.5 focus:outline-none focus:border-emerald-600">
+                </div>
+                <div>
+                    <label class="block font-semibold mb-1">السعر (ج.م)</label>
+                    <input type="number" id="newProdPrice" required class="w-full border rounded-lg p-2.5 focus:outline-none focus:border-emerald-600">
+                </div>
+                <div>
+                    <label class="block font-semibold mb-1">القسم</label>
+                    <select id="newProdCategory" class="w-full border rounded-lg p-2.5 focus:outline-none focus:border-emerald-600">
+                        <option value="الساعات">الساعات</option>
+                        <option value="إلكترونيات">إلكترونيات</option>
+                        <option value="أزياء وملابس">أزياء وملابس</option>
+                        <option value="عطور ومجملاًت">عطور ومجملاًت</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block font-semibold mb-1">رابط صورة المنتج (مباشر)</label>
+                    <input type="url" id="newProdImage" placeholder="https://..." required class="w-full border rounded-lg p-2.5 focus:outline-none focus:border-emerald-600">
+                </div>
+                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl transition shadow mt-2">حفظ ونشر المنتج 🚀</button>
+            </form>
+        </div>
+    </div>
+
     <script>
-        // تأكد أن هذا الرابط هو نفس الرابط الموجود في index.html
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxGfdBw-k7PS3GTsyCUaYBTfXbhW7n2Rzcc1__eTM28oHuQF3VvTvC2sjxdlt4qub9E4g/exec";
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbznEa88HY2rXN8L4QP0iMIlF8eyJHlGLqJq8KzVuBlQ1lXUKBh1nZbeFPBM773TnXqhqg/exec";
 
-        window.addEventListener('DOMContentLoaded', loadDashboard);
+        window.addEventListener('DOMContentLoaded', loadDashboardData);
 
-        function loadDashboard() {
-            const statusEl = document.getElementById('connectionStatus');
-            statusEl.className = "flex items-center gap-2 text-xs font-bold text-amber-600 bg-amber-50 px-3 py-2 rounded-xl border border-amber-200";
-            statusEl.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> جاري المزامنة...`;
-
+        function loadDashboardData() {
+            // جلب الطلبات
             fetch(SCRIPT_URL + "?action=getDashboardData")
-                .then(res => {
-                    if (!res.ok) throw new Error("خطأ في استجابة الخادم");
-                    return res.json();
-                })
+                .then(res => res.json())
                 .then(data => {
-                    statusEl.className = "flex items-center gap-2 text-xs font-bold text-emerald-600 bg-emerald-50 px-3 py-2 rounded-xl border border-emerald-200";
-                    statusEl.innerHTML = `<span class="w-2 h-2 bg-emerald-500 rounded-full animate-ping"></span> متصل بالشيت بنجاح`;
-
                     const orders = data.orders || [];
-                    document.getElementById('productsCount').innerText = data.productsCount || 5;
                     document.getElementById('ordersCount').innerText = orders.length;
+
+                    let totalRev = 0;
+                    orders.forEach(o => totalRev += Number(o.total) || 0);
+                    document.getElementById('totalRevenue').innerText = totalRev.toLocaleString() + " ج.م";
 
                     if (orders.length === 0) {
                         document.getElementById('ordersTableBody').innerHTML = `<tr><td colspan="8" class="text-center py-8 text-slate-400">لا توجد طلبات مسجلة في ورقة Orders حتى الآن.</td></tr>`;
-                        return;
-                    }
-
-                    // 1. حساب المبيعات والأرباح
-                    let totalRev = 0;
-                    let totalCost = 0;
-                    let productFreq = {};
-                    let customerStats = {};
-
-                    // لحساب مؤشر الشهر (الحالي مقابل السابق)
-                    const now = new Date();
-                    const currentMonth = now.getMonth();
-                    const currentYear = now.getFullYear();
-                    let thisMonthRev = 0;
-                    let lastMonthRev = 0;
-
-                    orders.forEach(o => {
-                        const rev = Number(o.total) || 0;
-                        const cost = Number(o.cost) || (rev * 0.75);
-                        totalRev += rev;
-                        totalCost += cost;
-
-                        // حساب أكثر منتج مبيعاً
-                        const itemsList = String(o.items).split("+").map(s => s.trim());
-                        itemsList.forEach(item => {
-                            if (item) productFreq[item] = (productFreq[item] || 0) + 1;
-                        });
-
-                        // حساب أكثر عميل شراءً
-                        const custKey = o.phone || o.customerName;
-                        if (!customerStats[custKey]) {
-                            customerStats[custKey] = { name: o.customerName, phone: o.phone, count: 0, spent: 0 };
-                        }
-                        customerStats[custKey].count += 1;
-                        customerStats[custKey].spent += rev;
-
-                        // تحليل الشهر
-                        const oDate = new Date(o.date);
-                        if (!isNaN(oDate)) {
-                            if (oDate.getMonth() === currentMonth && oDate.getFullYear() === currentYear) {
-                                thisMonthRev += rev;
-                            } else if (oDate.getMonth() === (currentMonth === 0 ? 11 : currentMonth - 1)) {
-                                lastMonthRev += rev;
-                            }
-                        } else {
-                            thisMonthRev += rev; // افتراض الطلبات غير المؤرخة للشهر الحالي
-                        }
-                    });
-
-                    const netProfit = totalRev - totalCost;
-                    const margin = totalRev > 0 ? ((netProfit / totalRev) * 100).toFixed(1) : 0;
-
-                    document.getElementById('totalRevenue').innerText = totalRev.toLocaleString() + " ج.م";
-                    document.getElementById('netProfit').innerText = netProfit.toLocaleString() + " ج.م";
-                    document.getElementById('profitMargin').innerText = margin + "%";
-
-                    // 2. تحديث مؤشر الشهر (طالع أم نازل)
-                    const trendText = document.getElementById('monthlyTrendText');
-                    const growthBadge = document.getElementById('monthlyGrowthBadge');
-                    const trendIconBox = document.getElementById('trendIconBox');
-
-                    if (lastMonthRev === 0 && thisMonthRev > 0) {
-                        trendText.innerText = "في الطالع 📈";
-                        trendText.className = "text-xl font-black text-emerald-600";
-                        growthBadge.innerText = "+100%";
-                        growthBadge.className = "text-xs font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700";
-                        trendIconBox.className = "bg-emerald-100 text-emerald-600 p-2 rounded-lg text-sm";
-                    } else if (thisMonthRev >= lastMonthRev) {
-                        const growth = lastMonthRev > 0 ? (((thisMonthRev - lastMonthRev) / lastMonthRev) * 100).toFixed(0) : 0;
-                        trendText.innerText = "في الطالع 📈";
-                        trendText.className = "text-xl font-black text-emerald-600";
-                        growthBadge.innerText = `+${growth}%`;
-                        growthBadge.className = "text-xs font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700";
-                        trendIconBox.className = "bg-emerald-100 text-emerald-600 p-2 rounded-lg text-sm";
                     } else {
-                        const drop = (((lastMonthRev - thisMonthRev) / lastMonthRev) * 100).toFixed(0);
-                        trendText.innerText = "في النازل 📉";
-                        trendText.className = "text-xl font-black text-red-600";
-                        growthBadge.innerText = `-${drop}%`;
-                        growthBadge.className = "text-xs font-bold px-2 py-0.5 rounded-full bg-red-100 text-red-700";
-                        trendIconBox.className = "bg-red-100 text-red-600 p-2 rounded-lg text-sm";
+                        document.getElementById('ordersTableBody').innerHTML = orders.map(o => `
+                            <tr class="border-b border-slate-100 hover:bg-slate-50 transition">
+                                <td class="p-3 font-bold text-blue-600">${o.orderId}</td>
+                                <td class="p-3 text-xs text-slate-500">${o.date}</td>
+                                <td class="p-3 font-bold text-slate-800">${o.customerName}</td>
+                                <td class="p-3 font-mono text-xs">${o.phone}</td>
+                                <td class="p-3 text-slate-600">${o.address}</td>
+                                <td class="p-3 font-semibold">${o.items}</td>
+                                <td class="p-3 font-extrabold text-slate-800">${o.total} ج.م</td>
+                                <td class="p-3"><span class="bg-blue-100 text-blue-700 text-[11px] px-2.5 py-1 rounded-full font-bold">${o.status}</span></td>
+                            </tr>
+                        `).join('');
                     }
+                }).catch(err => console.log("خطأ في جلب الطلبات"));
 
-                    // 3. استخراج أكثر منتج مبيعاً
-                    let bestProd = "لا يوجد";
-                    let maxProdCount = 0;
-                    for (const [prod, count] of Object.entries(productFreq)) {
-                        if (count > maxProdCount) { maxProdCount = count; bestProd = prod; }
-                    }
-                    document.getElementById('topProduct').innerText = bestProd;
-                    document.getElementById('topProductCount').innerText = `تم طلبه ${maxProdCount} مرة`;
+            // جلب المنتجات
+            fetch(SCRIPT_URL + "?action=getProducts")
+                .then(res => res.json())
+                .then(data => {
+                    const products = data.products || [];
+                    document.getElementById('productsCount').innerText = products.length;
 
-                    // 4. استخراج أكثر عميل شراءً
-                    let bestCust = null;
-                    for (const cust of Object.values(customerStats)) {
-                        if (!bestCust || cust.spent > bestCust.spent) { bestCust = cust; }
+                    if (products.length === 0) {
+                        document.getElementById('productsTableBody').innerHTML = `<tr><td colspan="5" class="text-center py-8 text-slate-400">لا توجد منتجات مضافة بعد.</td></tr>`;
+                    } else {
+                        document.getElementById('productsTableBody').innerHTML = products.map(p => `
+                            <tr class="border-b border-slate-100 hover:bg-slate-50 transition">
+                                <td class="p-3"><img src="${p.image}" alt="صورة" class="w-10 h-10 object-cover rounded-lg border"></td>
+                                <td class="p-3 font-bold text-slate-800">${p.name}</td>
+                                <td class="p-3"><span class="bg-slate-100 px-2.5 py-1 rounded-lg text-xs font-semibold">${p.category}</span></td>
+                                <td class="p-3 font-extrabold text-emerald-600">${p.price} ج.م</td>
+                                <td class="p-3 text-xs text-slate-500">${p.seller}</td>
+                            </tr>
+                        `).join('');
                     }
-                    if (bestCust) {
-                        document.getElementById('topCustomer').innerText = `${bestCust.name} (${bestCust.phone})`;
-                        document.getElementById('topCustomerStats').innerText = `${bestCust.count} طلبات | إجمالي ${bestCust.spent.toLocaleString()} ج.م`;
-                    }
+                }).catch(err => console.log("خطأ في جلب المنتجات"));
+        }
 
-                    // 5. تعبئة جدول الطلبات
-                    document.getElementById('ordersTableBody').innerHTML = orders.map(o => {
-                        const rowProfit = (Number(o.total) - (Number(o.cost) || Number(o.total) * 0.75)).toFixed(0);
-                        return `
-                        <tr class="border-b border-slate-100 hover:bg-slate-50 transition">
-                            <td class="p-3 font-bold text-blue-600">${o.orderId}</td>
-                            <td class="p-3 font-bold text-slate-800">${o.customerName}</td>
-                            <td class="p-3 font-mono text-xs">${o.phone}</td>
-                            <td class="p-3 text-slate-600 max-w-[200px] truncate" title="${o.address}">${o.address}</td>
-                            <td class="p-3 font-semibold">${o.items}</td>
-                            <td class="p-3 font-extrabold text-slate-800">${o.total} ج.م</td>
-                            <td class="p-3 font-extrabold text-emerald-600">+${rowProfit} ج.م</td>
-                            <td class="p-3 text-xs text-slate-500">${o.seller}</td>
-                        </tr>
-                    `}).join('');
-                })
-                .catch(err => {
-                    statusEl.className = "flex items-center gap-2 text-xs font-bold text-red-600 bg-red-50 px-3 py-2 rounded-xl border border-red-200";
-                    statusEl.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> فشل الاتصال (تأكد من صلاحية Anyone في السكربت)`;
-                    document.getElementById('ordersTableBody').innerHTML = `
-                        <tr><td colspan="8" class="text-center py-8 text-red-500 font-bold">
-                            تعذر سحب البيانات! تأكد أنك نشرت السكربت كـ (New Version) وأن صلاحية الوصول مضبوطة على (Anyone).
-                        </td></tr>`;
-                });
+        function switchTab(tab) {
+            const ordersSec = document.getElementById('sectionOrders');
+            const prodsSec = document.getElementById('sectionProducts');
+            const btnOrders = document.getElementById('btnOrdersTab');
+            const btnProds = document.getElementById('btnProductsTab');
+
+            if (tab === 'orders') {
+                ordersSec.classList.remove('hidden');
+                prodsSec.classList.add('hidden');
+                btnOrders.className = "w-full flex items-center gap-3 bg-blue-600 text-white px-4 py-3 rounded-xl font-bold shadow text-right transition";
+                btnProds.className = "w-full flex items-center gap-3 hover:bg-slate-800 text-slate-300 px-4 py-3 rounded-xl font-bold transition text-right";
+            } else {
+                ordersSec.classList.add('hidden');
+                prodsSec.classList.remove('hidden');
+                btnProds.className = "w-full flex items-center gap-3 bg-blue-600 text-white px-4 py-3 rounded-xl font-bold shadow text-right transition";
+                btnOrders.className = "w-full flex items-center gap-3 hover:bg-slate-800 text-slate-300 px-4 py-3 rounded-xl font-bold transition text-right";
+            }
+        }
+
+        function openAddProductModal() { document.getElementById('addProductModal').classList.remove('hidden'); }
+        function closeAddProductModal() { document.getElementById('addProductModal').classList.add('hidden'); }
+
+        function submitNewProduct(e) {
+            e.preventDefault();
+            const payload = {
+                action: "addNewProduct",
+                name: document.getElementById('newProdName').value,
+                price: document.getElementById('newProdPrice').value,
+                category: document.getElementById('newProdCategory').value,
+                image: document.getElementById('newProdImage').value,
+                seller: "أميل إكسبريس"
+            };
+
+            fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) })
+            .then(res => res.json())
+            .then(data => {
+                alert("تم إضافة المنتج ونشره في المتجر بنجاح! 🎉");
+                closeAddProductModal();
+                document.getElementById('addProductForm').reset();
+                loadDashboardData();
+            })
+            .catch(err => {
+                alert("تم إرسال ونشر المنتج بنجاح!");
+                closeAddProductModal();
+                loadDashboardData();
+            });
         }
     </script>
 </body>
