@@ -1,22 +1,23 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="rtl" translate="no" class="notranslate">
 <head>
     <meta charset="UTF-8">
+    <meta name="google" content="notranslate">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة التحكم | أميل إكسبريس</title>
+    <title>لوحة التحكم والتحليلات | أميل إكسبريس</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f8fafc; }
     </style>
 </head>
-<body class="flex h-screen overflow-hidden text-slate-800">
+<body class="flex h-screen overflow-hidden text-slate-800 notranslate">
 
     <!-- القائمة الجانبية -->
     <aside class="w-64 bg-slate-900 text-slate-300 flex flex-col justify-between hidden md:flex shadow-xl">
         <div class="p-5">
             <div class="flex items-center gap-2 text-white text-xl font-black mb-8 tracking-wider">
-                <i class="fa-solid fa-truck-fast text-blue-500"></i> إمـيـل أدمـيـن
+                <i class="fa-solid fa-truck-fast text-blue-500"></i> AMIL ADMIN
             </div>
             <nav class="space-y-2 text-sm font-semibold">
                 <button onclick="switchTab('orders')" id="btnOrders" class="w-full flex items-center gap-3 bg-blue-600 text-white px-4 py-3 rounded-xl shadow text-right transition">
@@ -44,32 +45,64 @@
         <!-- الشريط العلوي -->
         <div class="bg-white p-4 rounded-2xl shadow-sm mb-6 flex flex-wrap justify-between items-center gap-4 border border-slate-200">
             <div>
-                <h1 class="text-xl font-black text-slate-800">لوحة التحكم اللوجستية 🚀</h1>
-                <p class="text-xs text-slate-500">متابعة الطلبات والمنتجات المرتبطة بقاعدة بيانات جوجل</p>
+                <h1 class="text-xl font-black text-slate-800">لوحة التحكم والتحليل المالي 🚀</h1>
+                <p class="text-xs text-slate-500">متابعة حية للطلبات، الأرباح، ومنتجات المتجر</p>
             </div>
             <div class="flex items-center gap-3">
                 <button onclick="openModal()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-xl text-xs font-bold shadow flex items-center gap-2">
                     <i class="fa-solid fa-plus"></i> إضافة منتج
                 </button>
-                <span id="connStatus" class="bg-emerald-50 text-emerald-600 border border-emerald-200 text-xs font-bold px-3 py-2 rounded-xl">
-                    متصل بشيت جوجل
+                <a href="https://amilexprees-glitch.github.io/amil-shop/" target="_blank" class="bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-2">
+                    <i class="fa-solid fa-globe"></i> المتجر
+                </a>
+                <span id="connStatus" class="bg-amber-50 text-amber-600 border border-amber-200 text-xs font-bold px-3 py-2 rounded-xl flex items-center gap-1.5">
+                    <i class="fa-solid fa-spinner fa-spin"></i> جاري الاتصال...
                 </span>
             </div>
         </div>
 
         <!-- البطاقات الإحصائية -->
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
             <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
                 <span class="text-xs text-slate-400 font-bold">إجمالي المبيعات</span>
                 <h3 id="totRev" class="text-2xl font-black text-slate-800 mt-1">0 ج.م</h3>
+            </div>
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
+                <span class="text-xs text-slate-400 font-bold">صافي الأرباح (25%)</span>
+                <h3 id="netProfit" class="text-2xl font-black text-emerald-600 mt-1">0 ج.م</h3>
             </div>
             <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
                 <span class="text-xs text-slate-400 font-bold">إجمالي الطلبات</span>
                 <h3 id="totOrders" class="text-2xl font-black text-blue-600 mt-1">0</h3>
             </div>
             <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
-                <span class="text-xs text-slate-400 font-bold">إجمالي المنتجات</span>
-                <h3 id="totProds" class="text-2xl font-black text-emerald-600 mt-1">0</h3>
+                <span class="text-xs text-slate-400 font-bold">المنتجات النشطة</span>
+                <h3 id="totProds" class="text-2xl font-black text-purple-600 mt-1">0</h3>
+            </div>
+        </div>
+
+        <!-- أكثر منتج مبيعاً وأكثر عميل شراءً -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+            <div class="bg-gradient-to-l from-amber-50 to-white p-5 rounded-2xl shadow-sm border border-amber-200 flex items-center gap-4">
+                <div class="bg-amber-500 text-white w-12 h-12 rounded-2xl flex items-center justify-center text-xl shadow shrink-0">
+                    <i class="fa-solid fa-trophy"></i>
+                </div>
+                <div class="overflow-hidden">
+                    <span class="text-xs font-bold text-amber-700">🔥 المنتج الأكثر مبيعاً</span>
+                    <h4 id="topProduct" class="text-base font-black text-slate-800 truncate mt-0.5">لا توجد بيانات كافية</h4>
+                    <p id="topProductCount" class="text-xs text-slate-500">0 مبيعات</p>
+                </div>
+            </div>
+
+            <div class="bg-gradient-to-l from-blue-50 to-white p-5 rounded-2xl shadow-sm border border-blue-200 flex items-center gap-4">
+                <div class="bg-blue-600 text-white w-12 h-12 rounded-2xl flex items-center justify-center text-xl shadow shrink-0">
+                    <i class="fa-solid fa-crown"></i>
+                </div>
+                <div class="overflow-hidden">
+                    <span class="text-xs font-bold text-blue-700">⭐ العميل الأكثر شراءً (VIP)</span>
+                    <h4 id="topCustomer" class="text-base font-black text-slate-800 truncate mt-0.5">لا توجد بيانات كافية</h4>
+                    <p id="topCustomerStats" class="text-xs text-slate-500">0 طلبات | 0 ج.م</p>
+                </div>
             </div>
         </div>
 
@@ -79,8 +112,8 @@
                 <h3 class="font-bold text-slate-800 text-base flex items-center gap-2">
                     <i class="fa-solid fa-list-check text-blue-600"></i> سجل الطلبات الواردة
                 </h3>
-                <button onclick="loadData()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs px-3 py-2 rounded-xl font-bold">
-                    <i class="fa-solid fa-rotate"></i> تحديث
+                <button onclick="loadData()" class="bg-blue-600 hover:bg-blue-700 text-white text-xs px-4 py-2 rounded-xl font-bold shadow-sm flex items-center gap-1.5">
+                    <i class="fa-solid fa-rotate"></i> تحديث البيانات
                 </button>
             </div>
             <div class="overflow-x-auto">
@@ -90,15 +123,16 @@
                             <th class="p-3">رقم الطلب</th>
                             <th class="p-3">التاريخ</th>
                             <th class="p-3">اسم العميل</th>
-                            <th class="p-3">الهاتف</th>
+                            <th class="p-3">رقم الهاتف</th>
                             <th class="p-3">العنوان</th>
                             <th class="p-3">المنتجات</th>
                             <th class="p-3">الإجمالي</th>
+                            <th class="p-3">البائع</th>
                             <th class="p-3">الحالة</th>
                         </tr>
                     </thead>
                     <tbody id="ordersBody">
-                        <tr><td colspan="8" class="text-center py-8 text-slate-400">جاري التحميل...</td></tr>
+                        <tr><td colspan="9" class="text-center py-8 text-slate-400">جاري تحميل الطلبات...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -108,9 +142,9 @@
         <div id="tabProducts" class="bg-white rounded-2xl shadow-sm p-5 border border-slate-200 hidden">
             <div class="flex justify-between items-center mb-4">
                 <h3 class="font-bold text-slate-800 text-base flex items-center gap-2">
-                    <i class="fa-solid boxes-stacked text-emerald-600"></i> قائمة منتجات المتجر
+                    <i class="fa-solid fa-boxes-stacked text-emerald-600"></i> قائمة منتجات المتجر
                 </h3>
-                <button onclick="openModal()" class="bg-emerald-600 text-white text-xs px-3 py-2 rounded-xl font-bold">
+                <button onclick="openModal()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs px-4 py-2 rounded-xl font-bold shadow-sm">
                     <i class="fa-solid fa-plus"></i> إضافة منتج جديد
                 </button>
             </div>
@@ -126,7 +160,7 @@
                         </tr>
                     </thead>
                     <tbody id="productsBody">
-                        <tr><td colspan="5" class="text-center py-8 text-slate-400">جاري التحميل...</td></tr>
+                        <tr><td colspan="5" class="text-center py-8 text-slate-400">جاري تحميل المنتجات...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -137,55 +171,110 @@
     <!-- نافذة إضافة منتج -->
     <div id="productModal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl p-6 relative">
-            <button onclick="closeModal()" class="absolute top-4 left-4 text-slate-400 text-xl font-bold">×</button>
+            <button onclick="closeModal()" class="absolute top-4 left-4 text-slate-400 hover:text-slate-600 text-xl font-bold">×</button>
             <h3 class="text-lg font-bold text-slate-900 mb-4">إضافة منتج جديد للمتجر</h3>
             <form id="prodForm" onsubmit="saveProduct(event)" class="space-y-3 text-xs sm:text-sm">
                 <div>
                     <label class="block font-semibold mb-1">اسم المنتج</label>
-                    <input type="text" id="pName" required class="w-full border rounded-lg p-2.5">
+                    <input type="text" id="pName" required class="w-full border rounded-lg p-2.5 focus:outline-none focus:border-emerald-600">
                 </div>
                 <div>
                     <label class="block font-semibold mb-1">السعر (ج.م)</label>
-                    <input type="number" id="pPrice" required class="w-full border rounded-lg p-2.5">
+                    <input type="number" id="pPrice" required class="w-full border rounded-lg p-2.5 focus:outline-none focus:border-emerald-600">
                 </div>
                 <div>
                     <label class="block font-semibold mb-1">القسم</label>
-                    <select id="pCat" class="w-full border rounded-lg p-2.5">
+                    <select id="pCat" class="w-full border rounded-lg p-2.5 focus:outline-none focus:border-emerald-600">
                         <option value="الساعات">الساعات</option>
                         <option value="إلكترونيات">إلكترونيات</option>
                         <option value="أزياء وملابس">أزياء وملابس</option>
+                        <option value="عطور ومستحضرات تجميل">عطور ومستحضرات تجميل</option>
                     </select>
                 </div>
                 <div>
                     <label class="block font-semibold mb-1">رابط الصورة المباشر</label>
-                    <input type="url" id="pImg" placeholder="https://..." required class="w-full border rounded-lg p-2.5">
+                    <input type="url" id="pImg" placeholder="https://..." required class="w-full border rounded-lg p-2.5 focus:outline-none focus:border-emerald-600">
                 </div>
-                <button type="submit" class="w-full bg-emerald-600 text-white font-bold py-3 rounded-xl transition shadow mt-2">حفظ ونشر المنتج</button>
+                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl transition shadow mt-2">حفظ ونشر المنتج 🚀</button>
             </form>
         </div>
     </div>
 
     <script>
-        const API_URL = "https://script.google.com/macros/s/AKfycbznEa88HY2rXN8L4QP0iMIlF8eyJHlGLqJq8KzVuBlQ1lXUKBh1nZbeFPBM773TnXqhqg/exec";
+        const API_URL = "https://script.google.com/macros/s/AKfycbyUAgFDO07FaQ1Ilc9-7focFP1R9oRdcgHIcdhdk0MlJtXmmdwTx5nU7_WBXuAxSBunHA/exec";
 
         window.addEventListener('DOMContentLoaded', loadData);
 
         function loadData() {
-            // جلب الطلبات
+            const statusEl = document.getElementById('connStatus');
+            statusEl.className = "bg-amber-50 text-amber-600 border border-amber-200 text-xs font-bold px-3 py-2 rounded-xl flex items-center gap-1.5";
+            statusEl.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> جاري المزامنة...`;
+
+            // جلب الطلبات والإحصائيات
             fetch(API_URL + "?action=getDashboardData")
                 .then(res => res.json())
                 .then(data => {
+                    statusEl.className = "bg-emerald-50 text-emerald-600 border border-emerald-200 text-xs font-bold px-3 py-2 rounded-xl flex items-center gap-1.5";
+                    statusEl.innerHTML = `<span class="w-2 h-2 bg-emerald-500 rounded-full animate-ping"></span> متصل بالشيت بنجاح`;
+
                     const orders = data.orders || [];
                     document.getElementById('totOrders').innerText = orders.length;
+                    if (data.productsCount !== undefined) {
+                        document.getElementById('totProds').innerText = data.productsCount;
+                    }
+
                     let rev = 0;
-                    orders.forEach(o => rev += Number(o.total) || 0);
+                    let productFreq = {};
+                    let customerStats = {};
+
+                    orders.forEach(o => {
+                        const amount = Number(o.total) || 0;
+                        rev += amount;
+
+                        // حساب أكثر منتج مبيعاً
+                        const itemsList = String(o.items || "").split("+").map(s => s.trim());
+                        itemsList.forEach(item => {
+                            if (item) productFreq[item] = (productFreq[item] || 0) + 1;
+                        });
+
+                        // حساب أكثر عميل شراءً
+                        const custKey = o.phone || o.customerName;
+                        if (custKey) {
+                            if (!customerStats[custKey]) {
+                                customerStats[custKey] = { name: o.customerName, phone: o.phone, count: 0, spent: 0 };
+                            }
+                            customerStats[custKey].count += 1;
+                            customerStats[custKey].spent += amount;
+                        }
+                    });
+
                     document.getElementById('totRev').innerText = rev.toLocaleString() + " ج.م";
+                    document.getElementById('netProfit').innerText = (rev * 0.25).toLocaleString() + " ج.م";
+
+                    // عرض أكثر منتج
+                    let bestProd = "لا توجد بيانات كافية";
+                    let maxProdCount = 0;
+                    for (const [prod, count] of Object.entries(productFreq)) {
+                        if (count > maxProdCount) { maxProdCount = count; bestProd = prod; }
+                    }
+                    document.getElementById('topProduct').innerText = bestProd;
+                    document.getElementById('topProductCount').innerText = `${maxProdCount} مبيعات`;
+
+                    // عرض أكثر عميل
+                    let bestCust = null;
+                    for (const cust of Object.values(customerStats)) {
+                        if (!bestCust || cust.spent > bestCust.spent) { bestCust = cust; }
+                    }
+                    if (bestCust) {
+                        document.getElementById('topCustomer').innerText = `${bestCust.name} (${bestCust.phone})`;
+                        document.getElementById('topCustomerStats').innerText = `${bestCust.count} طلبات | ${bestCust.spent.toLocaleString()} ج.م`;
+                    }
 
                     if (orders.length === 0) {
-                        document.getElementById('ordersBody').innerHTML = `<tr><td colspan="8" class="text-center py-8 text-slate-400">لا توجد طلبات مسجلة حتى الآن.</td></tr>`;
+                        document.getElementById('ordersBody').innerHTML = `<tr><td colspan="9" class="text-center py-8 text-slate-400">لا توجد طلبات مسجلة حتى الآن.</td></tr>`;
                     } else {
                         document.getElementById('ordersBody').innerHTML = orders.map(o => `
-                            <tr class="border-b hover:bg-slate-50">
+                            <tr class="border-b hover:bg-slate-50 transition">
                                 <td class="p-3 font-bold text-blue-600">${o.orderId}</td>
                                 <td class="p-3 text-xs text-slate-500">${o.date}</td>
                                 <td class="p-3 font-bold">${o.customerName}</td>
@@ -193,11 +282,16 @@
                                 <td class="p-3 text-slate-600">${o.address}</td>
                                 <td class="p-3 font-semibold">${o.items}</td>
                                 <td class="p-3 font-extrabold text-slate-800">${o.total} ج.م</td>
+                                <td class="p-3 text-xs text-slate-500">${o.seller || 'أميل إكسبريس'}</td>
                                 <td class="p-3"><span class="bg-blue-100 text-blue-700 text-[11px] px-2.5 py-1 rounded-full font-bold">${o.status}</span></td>
                             </tr>
                         `).join('');
                     }
-                }).catch(err => console.log(err));
+                })
+                .catch(err => {
+                    statusEl.className = "bg-red-50 text-red-600 border border-red-200 text-xs font-bold px-3 py-2 rounded-xl flex items-center gap-1.5";
+                    statusEl.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> تعذر الاتصال بالشيت`;
+                });
 
             // جلب المنتجات
             fetch(API_URL + "?action=getProducts")
@@ -206,13 +300,13 @@
                     const prods = data.products || [];
                     document.getElementById('totProds').innerText = prods.length;
                     if (prods.length === 0) {
-                        document.getElementById('productsBody').innerHTML = `<tr><td colspan="5" class="text-center py-8 text-slate-400">لا توجد منتجات.</td></tr>`;
+                        document.getElementById('productsBody').innerHTML = `<tr><td colspan="5" class="text-center py-8 text-slate-400">لا توجد منتجات مضافة بعد.</td></tr>`;
                     } else {
                         document.getElementById('productsBody').innerHTML = prods.map(p => `
-                            <tr class="border-b hover:bg-slate-50">
-                                <td class="p-3"><img src="${p.image}" class="w-10 h-10 object-cover rounded-lg border"></td>
+                            <tr class="border-b hover:bg-slate-50 transition">
+                                <td class="p-3"><img src="${p.image}" alt="صورة" class="w-10 h-10 object-cover rounded-lg border"></td>
                                 <td class="p-3 font-bold">${p.name}</td>
-                                <td class="p-3"><span class="bg-slate-100 px-2 py-1 rounded text-xs">${p.category}</span></td>
+                                <td class="p-3"><span class="bg-slate-100 px-2.5 py-1 rounded-lg text-xs font-semibold">${p.category}</span></td>
                                 <td class="p-3 font-extrabold text-emerald-600">${p.price} ج.م</td>
                                 <td class="p-3 text-xs text-slate-500">${p.seller}</td>
                             </tr>
