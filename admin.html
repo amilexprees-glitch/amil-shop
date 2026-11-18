@@ -128,7 +128,7 @@
                             <th class="p-3">المنتجات</th>
                             <th class="p-3">الإجمالي</th>
                             <th class="p-3">البائع</th>
-                            <th class="p-3">الحالة</th>
+                            <th class="p-3 text-center">الحالة والإجراءات</th>
                         </tr>
                     </thead>
                     <tbody id="ordersBody">
@@ -205,12 +205,22 @@
 
         window.addEventListener('DOMContentLoaded', loadData);
 
+        function getStatusColor(status) {
+            switch(status) {
+                case 'تم التوصيل': return 'bg-emerald-100 text-emerald-700 border-emerald-300';
+                case 'خرج مع المندوب': return 'bg-purple-100 text-purple-700 border-purple-300';
+                case 'جاري التجهيز': return 'bg-amber-100 text-amber-700 border-amber-300';
+                case 'مؤجل': return 'bg-orange-100 text-orange-700 border-orange-300';
+                case 'مرتجع / ملغي': return 'bg-red-100 text-red-700 border-red-300';
+                default: return 'bg-blue-100 text-blue-700 border-blue-300';
+            }
+        }
+
         function loadData() {
             const statusEl = document.getElementById('connStatus');
             statusEl.className = "bg-amber-50 text-amber-600 border border-amber-200 text-xs font-bold px-3 py-2 rounded-xl flex items-center gap-1.5";
             statusEl.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> جاري المزامنة...`;
 
-            // جلب الطلبات والإحصائيات
             fetch(API_URL + "?action=getDashboardData")
                 .then(res => res.json())
                 .then(data => {
@@ -229,15 +239,15 @@
 
                     orders.forEach(o => {
                         const amount = Number(o.total) || 0;
-                        rev += amount;
+                        if (o.status !== 'مرتجع / ملغي') {
+                            rev += amount;
+                        }
 
-                        // حساب أكثر منتج مبيعاً
                         const itemsList = String(o.items || "").split("+").map(s => s.trim());
                         itemsList.forEach(item => {
                             if (item) productFreq[item] = (productFreq[item] || 0) + 1;
                         });
 
-                        // حساب أكثر عميل شراءً
                         const custKey = o.phone || o.customerName;
                         if (custKey) {
                             if (!customerStats[custKey]) {
@@ -251,7 +261,6 @@
                     document.getElementById('totRev').innerText = rev.toLocaleString() + " ج.م";
                     document.getElementById('netProfit').innerText = (rev * 0.25).toLocaleString() + " ج.م";
 
-                    // عرض أكثر منتج
                     let bestProd = "لا توجد بيانات كافية";
                     let maxProdCount = 0;
                     for (const [prod, count] of Object.entries(productFreq)) {
@@ -260,7 +269,6 @@
                     document.getElementById('topProduct').innerText = bestProd;
                     document.getElementById('topProductCount').innerText = `${maxProdCount} مبيعات`;
 
-                    // عرض أكثر عميل
                     let bestCust = null;
                     for (const cust of Object.values(customerStats)) {
                         if (!bestCust || cust.spent > bestCust.spent) { bestCust = cust; }
@@ -273,7 +281,12 @@
                     if (orders.length === 0) {
                         document.getElementById('ordersBody').innerHTML = `<tr><td colspan="9" class="text-center py-8 text-slate-400">لا توجد طلبات مسجلة حتى الآن.</td></tr>`;
                     } else {
-                        document.getElementById('ordersBody').innerHTML = orders.map(o => `
+                        const statuses = ["جديد", "جاري التجهيز", "خرج مع المندوب", "تم التوصيل", "مؤجل", "مرتجع / ملغي"];
+                        document.getElementById('ordersBody').innerHTML = orders.map(o => {
+                            const currentStatus = o.status || "جديد";
+                            const optionsHtml = statuses.map(st => `<option value="${st}" ${st === currentStatus ? 'selected' : ''}>${st}</option>`).join('');
+                            
+                            return `
                             <tr class="border-b hover:bg-slate-50 transition">
                                 <td class="p-3 font-bold text-blue-600">${o.orderId}</td>
                                 <td class="p-3 text-xs text-slate-500">${o.date}</td>
@@ -283,9 +296,18 @@
                                 <td class="p-3 font-semibold">${o.items}</td>
                                 <td class="p-3 font-extrabold text-slate-800">${o.total} ج.م</td>
                                 <td class="p-3 text-xs text-slate-500">${o.seller || 'أميل إكسبريس'}</td>
-                                <td class="p-3"><span class="bg-blue-100 text-blue-700 text-[11px] px-2.5 py-1 rounded-full font-bold">${o.status}</span></td>
+                                <td class="p-3">
+                                    <div class="flex items-center justify-center gap-2">
+                                        <select onchange="changeOrderStatus('${o.orderId}', this)" class="text-xs font-bold px-2.5 py-1.5 rounded-lg border cursor-pointer focus:outline-none ${getStatusColor(currentStatus)}">
+                                            ${optionsHtml}
+                                        </select>
+                                        <button onclick="deleteOrder('${o.orderId}')" title="حذف الطلب نهائياً" class="text-red-500 hover:text-red-700 hover:bg-red-50 p-1.5 rounded-lg transition">
+                                            <i class="fa-solid fa-trash-can"></i>
+                                        </button>
+                                    </div>
+                                </td>
                             </tr>
-                        `).join('');
+                        `}).join('');
                     }
                 })
                 .catch(err => {
@@ -293,7 +315,6 @@
                     statusEl.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> تعذر الاتصال بالشيت`;
                 });
 
-            // جلب المنتجات
             fetch(API_URL + "?action=getProducts")
                 .then(res => res.json())
                 .then(data => {
@@ -313,6 +334,37 @@
                         `).join('');
                     }
                 }).catch(err => console.log(err));
+        }
+
+        // تحديث حالة الطلب في الشيت
+        function changeOrderStatus(orderId, selectEl) {
+            const newStatus = selectEl.value;
+            selectEl.className = `text-xs font-bold px-2.5 py-1.5 rounded-lg border cursor-pointer focus:outline-none ${getStatusColor(newStatus)}`;
+            
+            fetch(API_URL, {
+                method: 'POST',
+                body: JSON.stringify({ action: "updateOrderStatus", orderId: orderId, status: newStatus })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (newStatus === 'مرتجع / ملغي') loadData(); // إعادة حساب الأرباح إذا تم الإلغاء
+            })
+            .catch(err => console.log("تم إرسال التحديث"));
+        }
+
+        // حذف الطلب نهائياً من الشيت
+        function deleteOrder(orderId) {
+            if (!confirm(`هل أنت متأكد من حذف الطلب (${orderId}) نهائياً من قاعدة البيانات؟`)) return;
+            
+            fetch(API_URL, {
+                method: 'POST',
+                body: JSON.stringify({ action: "deleteOrder", orderId: orderId })
+            })
+            .then(res => res.json())
+            .then(data => {
+                loadData();
+            })
+            .catch(err => loadData());
         }
 
         function switchTab(tab) {
