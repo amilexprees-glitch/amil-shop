@@ -25,7 +25,7 @@
             </div>
 
             <div class="flex-grow max-w-md hidden sm:block">
-                <input type="text" id="searchInput" oninput="filterProducts()" placeholder="ابحث عن منتج..." class="w-full bg-slate-800 text-white text-sm rounded-xl px-4 py-2 border border-slate-700 focus:outline-none focus:border-blue-500">
+                <input type="text" id="searchInput" oninput="renderProducts()" placeholder="ابحث عن منتج..." class="w-full bg-slate-800 text-white text-sm rounded-xl px-4 py-2 border border-slate-700 focus:outline-none focus:border-blue-500">
             </div>
 
             <button onclick="toggleCart()" class="relative bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-xl font-bold text-sm flex items-center gap-2 transition shadow">
@@ -49,14 +49,41 @@
     </div>
 
     <!-- شبكة المنتجات -->
-    <main class="max-w-7xl mx-auto px-4 py-6">
+    <main class="max-w-7xl mx-auto px-4 py-6 pb-24">
         <div id="productsGrid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
             <div class="col-span-full text-center py-16 text-slate-400">
                 <i class="fa-solid fa-spinner fa-spin text-2xl mb-2 text-blue-600"></i>
-                <p>جاري تحميل أحدث العروض والمنتجات...</p>
+                <p>جاري تحميل أحدث العروض والمنتجات من قاعدة البيانات...</p>
             </div>
         </div>
     </main>
+
+    <!-- أزرار الدعم السريع (خدمة العملاء والـ AI) -->
+    <div class="fixed bottom-6 left-6 z-40 flex flex-col gap-3">
+        <a href="https://wa.me/201000000000?text=مرحباً، أريد الاستفسار عن المنتجات والطلبات" target="_blank" class="bg-emerald-500 hover:bg-emerald-600 text-white w-14 h-14 rounded-full flex items-center justify-center text-2xl shadow-xl transition transform hover:scale-105" title="خدمة العملاء واتساب">
+            <i class="fa-brands fa-whatsapp"></i>
+        </a>
+        <button onclick="toggleAiChat()" class="bg-blue-600 hover:bg-blue-700 text-white w-14 h-14 rounded-full flex items-center justify-center text-xl shadow-xl transition transform hover:scale-105" title="المساعد الذكي">
+            <i class="fa-solid fa-robot"></i>
+        </button>
+    </div>
+
+    <!-- نافذة المساعد الذكي -->
+    <div id="aiModal" class="fixed bottom-24 left-6 w-80 sm:w-96 bg-white rounded-2xl shadow-2xl border border-slate-200 z-50 hidden flex flex-col h-[400px] overflow-hidden">
+        <div class="bg-slate-900 text-white p-3.5 flex justify-between items-center">
+            <span class="font-bold text-sm flex items-center gap-2"><i class="fa-solid fa-robot text-blue-400"></i> مساعد أميل الذكي</span>
+            <button onclick="toggleAiChat()" class="text-slate-400 hover:text-white font-bold text-lg">×</button>
+        </div>
+        <div id="aiChatBody" class="flex-grow p-3 overflow-y-auto space-y-3 text-xs sm:text-sm bg-slate-50">
+            <div class="bg-white p-3 rounded-2xl shadow-sm border border-slate-100 max-w-[85%]">
+                مرحباً بك! أنا مساعدك الذكي في متجر أميل. كيف يمكنني مساعدتك في اختيار المنتجات اليوم؟
+            </div>
+        </div>
+        <div class="p-3 bg-white border-t flex gap-2">
+            <input type="text" id="aiInput" placeholder="اكتب سؤالك هنا..." class="flex-grow border rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-blue-600" onkeypress="if(event.key==='Enter') sendAiMessage()">
+            <button onclick="sendAiMessage()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl text-xs font-bold"><i class="fa-solid fa-paper-plane"></i></button>
+        </div>
+    </div>
 
     <!-- سلة المشتريات الجانبية -->
     <div id="cartDrawer" class="fixed inset-0 bg-black/50 z-50 hidden flex justify-end">
@@ -102,7 +129,7 @@
                     renderProducts();
                 })
                 .catch(() => {
-                    document.getElementById('productsGrid').innerHTML = `<div class="col-span-full text-center py-12 text-red-500">تعذر تحميل المنتجات حالياً.</div>`;
+                    document.getElementById('productsGrid').innerHTML = `<div class="col-span-full text-center py-12 text-red-500">تعذر تحميل المنتجات من الشيت. تأكد من إضافة منتجات في ورقة Products.</div>`;
                 });
         });
 
@@ -116,8 +143,6 @@
             renderProducts();
         }
 
-        function filterProducts() { renderProducts(); }
-
         function renderProducts() {
             const query = (document.getElementById('searchInput')?.value || "").toLowerCase();
             const filtered = allProducts.filter(p => {
@@ -127,7 +152,7 @@
             });
 
             if (filtered.length === 0) {
-                document.getElementById('productsGrid').innerHTML = `<div class="col-span-full text-center py-12 text-slate-400">لا توجد منتجات مطابقة لبحثك.</div>`;
+                document.getElementById('productsGrid').innerHTML = `<div class="col-span-full text-center py-12 text-slate-400">لا توجد منتجات مسجلة في شيت جوجل حالياً. أضف منتجات لتظهر هنا.</div>`;
                 return;
             }
 
@@ -206,6 +231,31 @@
             const drawer = document.getElementById('cartDrawer');
             if (forceOpen === true) drawer.classList.remove('hidden');
             else drawer.classList.toggle('hidden');
+        }
+
+        function toggleAiChat() {
+            const modal = document.getElementById('aiModal');
+            modal.classList.toggle('hidden');
+        }
+
+        function sendAiMessage() {
+            const input = document.getElementById('aiInput');
+            const text = input.value.trim();
+            if (!text) return;
+
+            const chatBody = document.getElementById('aiChatBody');
+            chatBody.innerHTML += `<div class="bg-blue-600 text-white p-3 rounded-2xl shadow-sm max-w-[85%] mr-auto">${text}</div>`;
+            input.value = "";
+            chatBody.scrollTop = chatBody.scrollHeight;
+
+            setTimeout(() => {
+                let reply = "أهلاً بك! يمكنك اختيار أي منتج وإضافته للسلة، أو التواصل معنا عبر زر واتساب الأخضر لأي استفسار عاجل.";
+                if (text.includes("سعر") || text.includes("كام")) reply = "أسعارنا تنافسية وتظهر أسفل كل منتج، وتستطيع الطلب والدفع عند الاستلام.";
+                else if (text.includes("شحن") || text.includes("توصيل")) reply = "نحن نغطي جميع محافظات وجه بحري بتوصيل سريع وآمن حتى باب المنزل.";
+                
+                chatBody.innerHTML += `<div class="bg-white p-3 rounded-2xl shadow-sm border border-slate-100 max-w-[85%]">${reply}</div>`;
+                chatBody.scrollTop = chatBody.scrollHeight;
+            }, 600);
         }
 
         function lookupCustomer() {
