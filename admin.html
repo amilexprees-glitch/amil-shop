@@ -27,7 +27,7 @@
                     <i class="fa-solid fa-boxes-stacked"></i> منتجات المتجر
                 </button>
                 <button onclick="openModal()" class="w-full flex items-center gap-3 hover:bg-slate-800 text-emerald-400 px-4 py-3 rounded-xl transition text-right">
-                    <i class="fa-solid fa-circle-plus"></i> إضافة منتج جديد
+                    <i class="fa-solid fa-circle-plus"></i> إضافة منتج / جوميا
                 </button>
                 <a href="https://amilexprees-glitch.github.io/amil-shop/" target="_blank" class="flex items-center gap-3 hover:bg-slate-800 text-blue-400 px-4 py-3 rounded-xl transition">
                     <i class="fa-solid fa-store"></i> زيارة المتجر المباشر
@@ -46,7 +46,7 @@
         <div class="bg-white p-4 rounded-2xl shadow-sm mb-6 flex flex-wrap justify-between items-center gap-4 border border-slate-200">
             <div>
                 <h1 class="text-xl font-black text-slate-800">لوحة التحكم والتحليل المالي 🚀</h1>
-                <p class="text-xs text-slate-500">متابعة حية للطلبات، الأرباح، ومنتجات المتجر</p>
+                <p class="text-xs text-slate-500">إدارة الطلبات المباشرة ومنتجات التسويق بالعمولة (جوميا)</p>
             </div>
             <div class="flex items-center gap-3">
                 <button onclick="openModal()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-xl text-xs font-bold shadow flex items-center gap-2">
@@ -142,7 +142,7 @@
         <div id="tabProducts" class="bg-white rounded-2xl shadow-sm p-5 border border-slate-200 hidden">
             <div class="flex justify-between items-center mb-4">
                 <h3 class="font-bold text-slate-800 text-base flex items-center gap-2">
-                    <i class="fa-solid fa-boxes-stacked text-emerald-600"></i> قائمة منتجات المتجر
+                    <i class="fa-solid fa-boxes-stacked text-emerald-600"></i> قائمة منتجات المتجر (المباشرة + جوميا)
                 </h3>
                 <button onclick="openModal()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs px-4 py-2 rounded-xl font-bold shadow-sm">
                     <i class="fa-solid fa-plus"></i> إضافة منتج جديد
@@ -156,7 +156,7 @@
                             <th class="p-3">اسم المنتج</th>
                             <th class="p-3">القسم</th>
                             <th class="p-3">السعر</th>
-                            <th class="p-3">البائع</th>
+                            <th class="p-3">النوع / المصدر</th>
                         </tr>
                     </thead>
                     <tbody id="productsBody">
@@ -168,7 +168,7 @@
 
     </main>
 
-    <!-- نافذة إضافة منتج -->
+    <!-- نافذة إضافة منتج (مباشر أو جوميا) -->
     <div id="productModal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl p-6 relative">
             <button onclick="closeModal()" class="absolute top-4 left-4 text-slate-400 hover:text-slate-600 text-xl font-bold">×</button>
@@ -178,22 +178,32 @@
                     <label class="block font-semibold mb-1">اسم المنتج</label>
                     <input type="text" id="pName" required class="w-full border rounded-lg p-2.5 focus:outline-none focus:border-emerald-600">
                 </div>
-                <div>
-                    <label class="block font-semibold mb-1">السعر (ج.م)</label>
-                    <input type="number" id="pPrice" required class="w-full border rounded-lg p-2.5 focus:outline-none focus:border-emerald-600">
-                </div>
-                <div>
-                    <label class="block font-semibold mb-1">القسم</label>
-                    <select id="pCat" class="w-full border rounded-lg p-2.5 focus:outline-none focus:border-emerald-600">
-                        <option value="الساعات">الساعات</option>
-                        <option value="إلكترونيات">إلكترونيات</option>
-                        <option value="أزياء وملابس">أزياء وملابس</option>
-                        <option value="عطور ومستحضرات تجميل">عطور ومستحضرات تجميل</option>
-                    </select>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-semibold mb-1">السعر (ج.م)</label>
+                        <input type="number" id="pPrice" required class="w-full border rounded-lg p-2.5 focus:outline-none focus:border-emerald-600">
+                    </div>
+                    <div>
+                        <label class="block font-semibold mb-1">القسم</label>
+                        <select id="pCat" class="w-full border rounded-lg p-2.5 focus:outline-none focus:border-emerald-600">
+                            <option value="الساعات">الساعات</option>
+                            <option value="إلكترونيات">إلكترونيات</option>
+                            <option value="أزياء وملابس">أزياء وملابس</option>
+                            <option value="العناية بالبشرة">العناية بالبشرة</option>
+                            <option value="الأحذية">الأحذية</option>
+                        </select>
+                    </div>
                 </div>
                 <div>
                     <label class="block font-semibold mb-1">رابط الصورة المباشر</label>
                     <input type="url" id="pImg" placeholder="https://..." required class="w-full border rounded-lg p-2.5 focus:outline-none focus:border-emerald-600">
+                </div>
+                <div class="bg-orange-50 p-3 rounded-xl border border-orange-200">
+                    <label class="block font-bold text-orange-800 mb-1">
+                        <i class="fa-solid fa-link"></i> رابط الإحالة من جوميا (اختياري)
+                    </label>
+                    <input type="url" id="pAff" placeholder="https://kol.jumia.com/..." class="w-full border border-orange-300 rounded-lg p-2 text-xs focus:outline-none focus:border-orange-500">
+                    <p class="text-[11px] text-orange-700 mt-1">اتركه فارغاً إذا كان المنتج يُباع ويشحن مباشرة من متجرك.</p>
                 </div>
                 <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl transition shadow mt-2">حفظ ونشر المنتج 🚀</button>
             </form>
@@ -201,7 +211,7 @@
     </div>
 
     <script>
-        const API_URL = "https://script.google.com/macros/s/AKfycbx1sQdZ8tRkk37gd9RPewChoT4SFbj8qpPCv3Prn9d3xzlygf4NG4rWXrrqmUd1cfLg4A/exec";
+        const API_URL = "https://script.google.com/macros/s/AKfycbyUAgFDO07FaQ1Ilc9-7focFP1R9oRdcgHIcdhdk0MlJtXmmdwTx5nU7_WBXuAxSBunHA/exec";
 
         window.addEventListener('DOMContentLoaded', loadData);
 
@@ -239,9 +249,7 @@
 
                     orders.forEach(o => {
                         const amount = Number(o.total) || 0;
-                        if (o.status !== 'مرتجع / ملغي') {
-                            rev += amount;
-                        }
+                        if (o.status !== 'مرتجع / ملغي') rev += amount;
 
                         const itemsList = String(o.items || "").split("+").map(s => s.trim());
                         itemsList.forEach(item => {
@@ -285,7 +293,6 @@
                         document.getElementById('ordersBody').innerHTML = orders.map(o => {
                             const currentStatus = o.status || "جديد";
                             const optionsHtml = statuses.map(st => `<option value="${st}" ${st === currentStatus ? 'selected' : ''}>${st}</option>`).join('');
-                            
                             return `
                             <tr class="border-b hover:bg-slate-50 transition">
                                 <td class="p-3 font-bold text-blue-600">${o.orderId}</td>
@@ -323,48 +330,39 @@
                     if (prods.length === 0) {
                         document.getElementById('productsBody').innerHTML = `<tr><td colspan="5" class="text-center py-8 text-slate-400">لا توجد منتجات مضافة بعد.</td></tr>`;
                     } else {
-                        document.getElementById('productsBody').innerHTML = prods.map(p => `
+                        document.getElementById('productsBody').innerHTML = prods.map(p => {
+                            const isJumia = p.affiliateUrl && p.affiliateUrl.trim() !== "";
+                            const badge = isJumia 
+                                ? `<a href="${p.affiliateUrl}" target="_blank" class="bg-orange-100 text-orange-700 border border-orange-300 px-2.5 py-1 rounded-full text-xs font-bold inline-flex items-center gap-1 hover:bg-orange-200">جوميا (إحالة) <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i></a>`
+                                : `<span class="bg-blue-100 text-blue-700 px-2.5 py-1 rounded-full text-xs font-bold">متجر أميل (مباشر)</span>`;
+                            return `
                             <tr class="border-b hover:bg-slate-50 transition">
                                 <td class="p-3"><img src="${p.image}" alt="صورة" class="w-10 h-10 object-cover rounded-lg border"></td>
                                 <td class="p-3 font-bold">${p.name}</td>
                                 <td class="p-3"><span class="bg-slate-100 px-2.5 py-1 rounded-lg text-xs font-semibold">${p.category}</span></td>
                                 <td class="p-3 font-extrabold text-emerald-600">${p.price} ج.م</td>
-                                <td class="p-3 text-xs text-slate-500">${p.seller}</td>
+                                <td class="p-3">${badge}</td>
                             </tr>
-                        `).join('');
+                        `}).join('');
                     }
                 }).catch(err => console.log(err));
         }
 
-        // تحديث حالة الطلب في الشيت
         function changeOrderStatus(orderId, selectEl) {
             const newStatus = selectEl.value;
             selectEl.className = `text-xs font-bold px-2.5 py-1.5 rounded-lg border cursor-pointer focus:outline-none ${getStatusColor(newStatus)}`;
-            
             fetch(API_URL, {
                 method: 'POST',
                 body: JSON.stringify({ action: "updateOrderStatus", orderId: orderId, status: newStatus })
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (newStatus === 'مرتجع / ملغي') loadData(); // إعادة حساب الأرباح إذا تم الإلغاء
-            })
-            .catch(err => console.log("تم إرسال التحديث"));
+            }).then(() => { if (newStatus === 'مرتجع / ملغي') loadData(); });
         }
 
-        // حذف الطلب نهائياً من الشيت
         function deleteOrder(orderId) {
             if (!confirm(`هل أنت متأكد من حذف الطلب (${orderId}) نهائياً من قاعدة البيانات؟`)) return;
-            
             fetch(API_URL, {
                 method: 'POST',
                 body: JSON.stringify({ action: "deleteOrder", orderId: orderId })
-            })
-            .then(res => res.json())
-            .then(data => {
-                loadData();
-            })
-            .catch(err => loadData());
+            }).then(() => loadData()).catch(() => loadData());
         }
 
         function switchTab(tab) {
@@ -397,16 +395,16 @@
                 price: document.getElementById('pPrice').value,
                 category: document.getElementById('pCat').value,
                 image: document.getElementById('pImg').value,
+                affiliateUrl: document.getElementById('pAff').value.trim(),
                 seller: "أميل إكسبريس"
             };
             fetch(API_URL, { method: 'POST', body: JSON.stringify(payload) })
-            .then(res => res.json())
-            .then(data => {
+            .then(() => {
                 alert("تم نشر المنتج بنجاح! 🎉");
                 closeModal();
                 document.getElementById('prodForm').reset();
                 loadData();
-            }).catch(err => {
+            }).catch(() => {
                 alert("تم الحفظ بنجاح!");
                 closeModal();
                 loadData();
